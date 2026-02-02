@@ -1,7 +1,7 @@
 package service.impl;
 
-import dto.UserDao;
-import dto.impl.UserDaoImpl;
+import dao.UserDao;
+import dao.impl.UserDaoImpl;
 import model.User;
 import service.UserService;
 
@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import static utils.InputUtils.*;
 import static utils.PrintUtils.*;
 import static views.Menus.*;
-import static views.Tables.*;
 
 public class UserServiceImpl implements UserService {
 

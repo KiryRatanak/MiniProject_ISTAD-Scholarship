@@ -1,4 +1,4 @@
-package dto;
+package dao;
 
 import model.User;
 

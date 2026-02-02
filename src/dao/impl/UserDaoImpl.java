@@ -1,7 +1,7 @@
-package dto.impl;
+package dao.impl;
 
 import config.DBConfig;
-import dto.UserDao;
+import dao.UserDao;
 import model.User;
 
 import java.sql.Connection;

@@ -1,5 +1,6 @@
 package utils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -20,7 +21,19 @@ public class InputUtils {
             try {
                 return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println( RED +"Invalid input. Please enter a whole number." + RESET);
+                printErr( "Invalid input. Please enter a whole number.");
+            }
+        }
+    }
+
+    public static BigDecimal readBigDecimal(String label) {
+        while (true) {
+            System.out.print(label);
+            String input = scanner.nextLine();
+            try {
+                return new BigDecimal(input);
+            } catch (NumberFormatException e) {
+                printErr("Invalid format! Please enter a numeric value (e.g., 1500.00).");
             }
         }
     }
@@ -47,7 +60,7 @@ public class InputUtils {
             try {
                 return Double.parseDouble(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a decimal number.");
+                printErr("Invalid input. Please enter a decimal number.");
             }
         }
     }
@@ -67,8 +80,18 @@ public class InputUtils {
             if (!input.isEmpty()) {
                 return input;
             }
-            System.out.println("Input cannot be empty.");
+            printErr("Input cannot be empty.");
         }
+    }
+
+    public static boolean readOptionalBoolean(String label, boolean defaultValue) {
+        System.out.print(label + " (y/n, default " + (defaultValue ? "y" : "n") + "): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+
+        if (input.isEmpty()) {
+            return defaultValue;
+        }
+        return input.startsWith("y");
     }
 
     public static String readText(String message) {
@@ -81,24 +104,16 @@ public class InputUtils {
         scanner.nextLine();
     }
 
-    public static String readValidText(String message) {
-        while (true) {
-            String input = readText(message);
-            if (!input.isEmpty()) return input;
-            printErr("Input cannot be empty.");
-        }
-    }
-
     /**
      * Reads a yes/no confirmation.
      */
     public static boolean readBoolean(String prompt) {
         while (true) {
-            System.out.print(prompt + " (y/n): ");
+            System.out.print(prompt + " (Y/n): ");
             String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y") || input.equals("yes")) return true;
             if (input.equals("n") || input.equals("no")) return false;
-            System.out.println("Please enter 'y' or 'n'.");
+            System.out.println("Please enter 'Y' or 'n'.");
         }
     }
 
@@ -113,7 +128,7 @@ public class InputUtils {
             try {
                 return LocalDate.parse(input, formatter);
             } catch (DateTimeParseException e) {
-                System.out.println("Invalid format. Please use YYYY-MM-DD (e.g., 2026-02-02).");
+                printErr("Invalid format. Please use YYYY-MM-DD (e.g., 2026-02-02).");
             }
         }
     }
@@ -135,13 +150,13 @@ public class InputUtils {
 
                 // Optional Validation: Check if it's in the past
                 if (mustBeInPast && date.isAfter(LocalDate.now())) {
-                    System.out.println("Error: Date cannot be in the future.");
+                    printErr("Error: Date cannot be in the future.");
                     continue;
                 }
 
                 return date;
             } catch (DateTimeParseException e) {
-                System.out.println("Invalid format. Please use YYYY-MM-DD.");
+                printErr("Invalid format. Please use YYYY-MM-DD.");
             }
         }
     }
@@ -150,7 +165,7 @@ public class InputUtils {
      * Optional String: Returns null if input is empty.
      */
     public static String readOptionalString(String prompt) {
-        System.out.print(prompt + " (Leave blank to skip): ");
+        System.out.print(prompt + " (enter to skip): ");
         String input = scanner.nextLine().trim();
         return input.isEmpty() ? null : input;
     }
@@ -166,7 +181,7 @@ public class InputUtils {
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                printErr("Invalid input. Please enter a number.");
             }
         }
     }
@@ -186,7 +201,7 @@ public class InputUtils {
             try {
                 return Double.parseDouble(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid decimal number (e.g., 12.5).");
+                printErr("Invalid input. Please enter a valid decimal number (e.g., 12.5).");
             }
         }
     }

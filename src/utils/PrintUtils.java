@@ -4,9 +4,8 @@ import static utils.InputUtils.*;
 import static views.Colors.*;
 
 public class PrintUtils {
-    public static String printHead(String title) {
+    public static void printHead(String title) {
         System.out.println(CYAN + "\n*** " + title.toUpperCase() +" ***" + RESET);
-        return title;
     }
 
     public static void printTrue(String msg) {
@@ -14,11 +13,11 @@ public class PrintUtils {
     }
 
     public static void printErr(String msg) {
-        System.out.println(RED + "[❌] " + msg + RESET);
+        System.out.println(RED + "[❌] " + msg + ".!" + RESET);
     }
 
 
-    public static void printWarm(String msg) {
+    public static void printWarn(String msg) {
         System.out.println(YELLOW + "[!] " + msg + RESET);
     }
 
