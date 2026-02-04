@@ -94,11 +94,6 @@ public class InputUtils {
         return input.startsWith("y");
     }
 
-    public static String readText(String message) {
-        print(GREEN + ">>> "+message+ " : " + RESET);
-        return scanner.nextLine().trim();
-    }
-
     public static void readEnter(String message) {
         print(message);
         scanner.nextLine();

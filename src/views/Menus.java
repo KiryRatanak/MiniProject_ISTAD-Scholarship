@@ -36,24 +36,62 @@ public class Menus {
 
     public static void adminMenu() {
         while (true) {
-            renderUserMenu();
-            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,5);
 
-            switch (choice) {
-                case 1 -> createNew();
-                case 2 -> viewAll();
-                case 3 -> searchById();
-                case 4 -> update();
-                case 5 -> delete();
+            renderAdminMenu();
+            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,2);
+
+            switch (choice){
+                case 1 -> scholarshipMenu();
+                case 2 -> enrollmentMenu();
                 case 0 -> {
                     return;
                 }
-                default -> printErr("Invalid choice!");
+                default -> printErr("Invalid choice..!");
             }
         }
     }
 
-    public static void createNew() {
+    public static void scholarshipMenu(){
+        while (true) {
+
+            renderScholarshipMenu();
+            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,5);
+
+            switch (choice) {
+                case 1 -> createScholarship();
+                case 2 -> viewAllScholarship();
+                case 3 -> searchScholarshipById();
+                case 4 -> updateScholarship();
+                case 5 -> deleteScholarship();
+                case 0 -> {
+                    return;
+                }
+                default -> printErr("Invalid choice..!");
+            }
+        }
+    }
+
+    public static void enrollmentMenu(){
+        while (true) {
+
+            renderEnrollmentMenu();
+            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,5);
+
+            switch (choice) {
+//                case 1 -> createScholarship();
+//                case 2 -> viewAllScholarship();
+//                case 3 -> searchScholarshipById();
+//                case 4 -> updateScholarship();
+                case 5 -> deleteScholarship();
+                case 0 -> {
+                    return;
+                }
+                default -> printErr("Invalid choice..!");
+            }
+        }
+    }
+
+    public static void createScholarship() {
         printHead("Create New Scholarship");
         Scholarship s = new Scholarship();
 
@@ -73,7 +111,7 @@ public class Menus {
         printTrue("Scholarship created successfully!");
     }
 
-    public static void searchById() {
+    public static void searchScholarshipById() {
         int id = readInt("Enter Scholarship ID: ");
         Scholarship s = scholarshipService.getScholarshipById(id);
         if (s != null) {
@@ -81,13 +119,13 @@ public class Menus {
         }
     }
 
-    public static void viewAll() {
+    public static void viewAllScholarship() {
         List<Scholarship> list = scholarshipService.getAllScholarships();
         list.forEach(System.out::println);
     }
 
-    public static void update() {
-        int id = readInt("Enter ID of scholarship to update: ");
+    public static void updateScholarship() {
+        int id = readInt("Enter ID of scholarship to updateScholarship: ");
         printWarn("Press (Enter) to keep data...");
         Scholarship existing = scholarshipService.getScholarshipById(id);
         if (existing == null) {
@@ -112,12 +150,12 @@ public class Menus {
         System.out.println("Scholarship updated!");
     }
 
-    public static void delete() {
-        int id = readInt("Enter ID to delete");
+    public static void deleteScholarship() {
+        int id = readInt("Enter ID to deleteScholarship");
 
         Scholarship s = scholarshipService.getScholarshipById(id);
         if (s != null) {
-            String confirm = readString("Are you sure you want to delete ID " + id + "? (Y/n): ");
+            String confirm = readString("Are you sure you want to deleteScholarship ID " + id + "? (Y/n): ");
             if (confirm.equalsIgnoreCase("y")) {
                 scholarshipService.deleteScholarship(id);
                 System.out.println("Deleted.");
