@@ -26,7 +26,7 @@ public class ScholarshipServiceImpl implements ScholarshipService {
     public Scholarship getScholarshipById(int id) {
         Scholarship scholarship = scholarshipDao.findById(id);
         if (scholarship == null) {
-            printErr("Scholarship with ID " + id + " not found.");
+            printErr("Scholarship with ID [" + id + "] not found.");
         }
         return scholarship;
     }

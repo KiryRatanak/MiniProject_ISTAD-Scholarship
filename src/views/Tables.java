@@ -1,5 +1,6 @@
 package views;
 
+import model.Enrollment;
 import model.Scholarship;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.Table;
@@ -11,6 +12,12 @@ import static views.Colors.*;
 
 
 public class Tables {
+    public static void renderHeader(String messages){
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(PURPLE+ "   ***   " + messages.toUpperCase() + "   ***   " + RESET);
+        System.out.println(t.render());
+    }
+
     public static void renderStartMenu(){
         Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
         t.addCell(GREEN + "WELCOME TO ISTAD SCHOLARSHIP SYSTEM" + RESET);
@@ -25,13 +32,28 @@ public class Tables {
         t.addCell(GREEN + "Admin Dashboard" + RESET);
         t.addCell(BLUE + "1. Scholarship" + RESET);
         t.addCell(BLUE + "2. Enrollment" + RESET);
-        t.addCell(RED + "0. Back" + RESET);
+        t.addCell(RED + "0. LogOut" + RESET);
         System.out.println(t.render());
+    }
+
+    public static void renderUserMenu(){
+
+        Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+        t.addCell(GREEN + "Student Dashboard" + RESET);
+        t.addCell(BLUE + "1. View Scholarship" + RESET);
+        t.addCell(BLUE + "2. Search Scholarship" + RESET);
+        t.addCell(BLUE + "3. Apply Scholarship" + RESET);
+        t.addCell(BLUE + "4. View Own Enrollment" + RESET);
+        t.addCell(BLUE + "5. Update Own Enrollment" + RESET);
+        t.addCell(BLUE + "6. Delete Own Enrollment" + RESET);
+        t.addCell(RED + "0. LogOut" + RESET);
+        System.out.println(t.render());
+
     }
 
     public static void renderScholarshipMenu(){
         Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "Scholarship Management" + RESET);
+        t.addCell(GREEN + "*** Scholarship Management ***" + RESET);
         t.addCell(BLUE + "1. Create Scholarship" + RESET);
         t.addCell(BLUE + "2. View All Scholarship" + RESET);
         t.addCell(BLUE + "3. Search Scholarship" + RESET);
@@ -43,7 +65,7 @@ public class Tables {
 
     public static void renderEnrollmentMenu(){
         Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "Enrollment Management" + RESET);
+        t.addCell(GREEN + "*** Enrollment Management ***" + RESET);
         t.addCell(BLUE + "1. Create Enrollment" + RESET);
         t.addCell(BLUE + "2. View All Enrollment" + RESET);
         t.addCell(BLUE + "3. Search Enrollment" + RESET);
@@ -107,6 +129,46 @@ public class Tables {
             t.addCell(String.valueOf(s.getMaxQuota()));
             t.addCell(String.valueOf(s.getYearLevel()));
             t.addCell(s.getIsEnabled() ? "Active" : "Disabled");
+        }
+
+        System.out.println(t.render());
+    }
+
+    public static void renderViewOwnEnrollment(List<Enrollment> list) {
+        if (list == null || list.isEmpty()) {
+            printErr(YELLOW + "No enrollment records found." + RESET);
+            return;
+        }
+
+        Table t = new Table(11, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+
+        t.addCell("ID");
+        t.addCell("Scholar ID");
+        t.addCell("Full Name");
+        t.addCell("Gen");
+        t.addCell("DOB");
+        t.addCell("Phone");
+        t.addCell("Year");
+        t.addCell("School");
+        t.addCell("Major");
+        t.addCell("Status");
+        t.addCell("Payment");
+
+        for (Enrollment e : list) {
+            t.addCell(e.getId().toString());
+            t.addCell(e.getScholarshipId().toString());
+            t.addCell(e.getFullName());
+            t.addCell(e.getGender());
+            t.addCell(e.getDob().toString());
+            t.addCell(e.getPhoneNumber());
+            t.addCell(e.getYearLevel().toString());
+            t.addCell(e.getSchool());
+            t.addCell(e.getMajor());
+
+            String statusColor = "PENDING".equalsIgnoreCase(e.getPaymentStatus()) ? YELLOW : GREEN;
+            t.addCell(statusColor + e.getPaymentStatus() + RESET);
+
+            t.addCell(e.getPaymentMethod());
         }
 
         System.out.println(t.render());

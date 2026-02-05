@@ -1,14 +1,18 @@
 package views;
 
+import model.Enrollment;
 import model.Scholarship;
+import service.EnrollmentService;
 import service.ScholarshipService;
+import service.impl.EnrollmentServiceImpl;
 import service.impl.ScholarshipServiceImpl;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
+import static model.User.currentUser;
 import static service.impl.UserServiceImpl.userService;
 import static utils.InputUtils.*;
 import static utils.PrintUtils.*;
@@ -17,9 +21,12 @@ import static views.Tables.*;
 
 public class Menus {
     public static final ScholarshipService scholarshipService = new ScholarshipServiceImpl();
+    private static final EnrollmentService enrollmentService = new EnrollmentServiceImpl();
+    private static final Enrollment enrollment = new Enrollment();
 
     public static void run() throws SQLException {
         while (true) {
+
             renderStartMenu();
             int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,2);
 
@@ -33,7 +40,23 @@ public class Menus {
     }
 
     public static void userMenu() {
-        System.out.println("user");
+
+        while (true){
+            renderUserMenu();
+            int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,6);
+
+            switch (choice) {
+                case 1 -> viewAllScholarship();
+                case 2 -> searchScholarshipById();
+                case 3 -> applyScholarship();
+                case 4 -> viewOwnEnrollment();
+                case 5 -> updateOwnEnrollment();
+                case 6 -> deleteOwnEnrollment();
+                case 0 -> {return;}
+                default -> printErr("Invalid choice.");
+            }
+        }
+
     }
 
     public static void adminMenu() {
@@ -48,10 +71,12 @@ public class Menus {
                 case 0 -> {
                     return;
                 }
-                default -> printErr("Invalid choice..!");
+                default -> printErr("Invalid choice.");
             }
         }
     }
+
+    /* admin */
 
     public static void scholarshipMenu(){
         while (true) {
@@ -80,11 +105,11 @@ public class Menus {
             int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,5);
 
             switch (choice) {
-//                case 1 -> createScholarship();
-//                case 2 -> viewAllScholarship();
-//                case 3 -> searchScholarshipById();
-//                case 4 -> updateScholarship();
-                case 5 -> deleteScholarship();
+                case 1 -> createEnrollment();
+                case 2 -> viewAllEnrollment();
+                case 3 -> searchEnrollmentById();
+                case 4 -> updateEnrollment();
+                case 5 -> deleteEnrollment();
                 case 0 -> {
                     return;
                 }
@@ -97,36 +122,53 @@ public class Menus {
         printHead("Create New Scholarship");
         Scholarship s = new Scholarship();
 
-        s.setType(readString("Enter Type : "));
-        s.setDescription(readString("Enter Description : "));
-        s.setScholarship(readInt("Enter Scholarship : "));
-        s.setFullPrice(readBigDecimal("Enter Full Price : "));
-        s.setSponsor(readString("Enter Sponsor : "));
-        s.setDuration(readString("Enter Duration : "));
-        s.setMaxQuota(readInt("Enter Max Quota : "));
-        s.setYearLevel(readInt("Enter Year Level : "));
-        s.setWeek(readString("Enter Week : "));
-        s.setIsEnabled(true);
+        try {
 
-        scholarshipService.createScholarship(s);
-        printTrue("Scholarship created successfully!");
+            s.setType(readString("Enter Type : "));
+            s.setDescription(readString("Enter Description : "));
+            s.setScholarship(readInt("Enter Scholarship : "));
+            s.setFullPrice(readBigDecimal("Enter Full Price : "));
+            s.setSponsor(readString("Enter Sponsor : "));
+            s.setDuration(readString("Enter Duration : "));
+            s.setMaxQuota(readInt("Enter Max Quota : "));
+            s.setYearLevel(readInt("Enter Year Level : "));
+            s.setWeek(readString("Enter Week : "));
+            s.setIsEnabled(true);
+
+            scholarshipService.createScholarship(s);
+            printTrue("Scholarship created successfully!");
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
     }
 
     public static void searchScholarshipById() {
 
         int id = readInt("Enter Scholarship ID : ");
 
-        Scholarship s = scholarshipService.getScholarshipById(id);
+        try {
 
-        if (s != null) {
-            System.out.println("✅ Found Result :");
-            renderSearchScholarship(s);
+            Scholarship s = scholarshipService.getScholarshipById(id);
+
+            if (s != null) {
+                System.out.println("✅ Found Result :");
+                renderSearchScholarship(s);
+            }
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
         }
     }
 
     public static void viewAllScholarship() {
-        List<Scholarship> list = scholarshipService.getAllScholarships();
-        renderAllScholarship(list);
+        try {
+            List<Scholarship> list = scholarshipService.getAllScholarships();
+            renderAllScholarship(list);
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
     }
 
     public static void updateScholarship() {
@@ -138,43 +180,48 @@ public class Menus {
             return;
         }
 
-        printCurrent("(Current : " + existing.getType() + ")");
-        String type = readOptionalString("Enter new Type : ");
-        if (type != null) existing.setType(type);
+        try {
 
-        printCurrent("(Current : " + existing.getDescription() + ")");
-        String desc = readOptionalString("Enter new Description : ");
-        if (desc != null) existing.setDescription(desc);
+            printCurrent("(Current : " + existing.getType() + ")");
+            String type = readOptionalString("Enter new Type : ");
+            if (type != null) existing.setType(type);
 
-        printCurrent("(Current : " + existing.getScholarship() + ")");
-        Integer scholarship = readOptionalInt("Enter new Scholarship : ");
-        if (scholarship != null) existing.setScholarship(scholarship);
+            printCurrent("(Current : " + existing.getDescription() + ")");
+            String desc = readOptionalString("Enter new Description : ");
+            if (desc != null) existing.setDescription(desc);
 
-        printCurrent("(Current : " + existing.getFullPrice() + ")");
-        BigDecimal price = readOptionalBigDecimal("Enter new Full Price : ");
-        if (price != null) existing.setFullPrice(price);
+            printCurrent("(Current : " + existing.getScholarship() + ")");
+            Integer scholarship = readOptionalInt("Enter new Scholarship : ");
+            if (scholarship != null) existing.setScholarship(scholarship);
 
-        printCurrent("(Current : " + existing.getSponsor() + ")");
-        String sponsor = readOptionalString("Enter new Sponsor : ");
-        if (sponsor != null) existing.setSponsor(sponsor);
+            printCurrent("(Current : " + existing.getFullPrice() + ")");
+            BigDecimal price = readOptionalBigDecimal("Enter new Full Price : ");
+            if (price != null) existing.setFullPrice(price);
 
-        printCurrent("(Current : " + existing.getDuration() + ")");
-        String duration = readOptionalString("Enter new Duration : ");
-        if (duration != null) existing.setDuration(duration);
+            printCurrent("(Current : " + existing.getSponsor() + ")");
+            String sponsor = readOptionalString("Enter new Sponsor : ");
+            if (sponsor != null) existing.setSponsor(sponsor);
 
-        printCurrent("(Current : " + existing.getMaxQuota() + ")");
-        Integer quota = readOptionalInt("Enter new Max Quota : ");
-        if (quota != null) existing.setMaxQuota(quota);
+            printCurrent("(Current : " + existing.getDuration() + ")");
+            String duration = readOptionalString("Enter new Duration : ");
+            if (duration != null) existing.setDuration(duration);
 
-        printCurrent("(Current : " + existing.getYearLevel() + ")");
-        Integer year = readOptionalInt("Enter new Year Level : ");
-        if (year != null) existing.setYearLevel(year);
+            printCurrent("(Current : " + existing.getMaxQuota() + ")");
+            Integer quota = readOptionalInt("Enter new Max Quota : ");
+            if (quota != null) existing.setMaxQuota(quota);
 
-        printCurrent("(Current : " + existing.getWeek() + ")");
-        String week = readOptionalString("Enter new Week : ");
-        if (week != null) existing.setWeek(week);
-        existing.setIsEnabled(true);
+            printCurrent("(Current : " + existing.getYearLevel() + ")");
+            Integer year = readOptionalInt("Enter new Year Level : ");
+            if (year != null) existing.setYearLevel(year);
 
+            printCurrent("(Current : " + existing.getWeek() + ")");
+            String week = readOptionalString("Enter new Week : ");
+            if (week != null) existing.setWeek(week);
+            existing.setIsEnabled(true);
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
 
         scholarshipService.updateScholarship(existing);
         printTrue("Scholarship updated!");
@@ -183,14 +230,162 @@ public class Menus {
     public static void deleteScholarship() {
         int id = readInt("Enter ID to delete : ");
 
+        try{
+
         Scholarship s = scholarshipService.getScholarshipById(id);
         if (s != null) {
             String confirm = readString("Are you sure to deleteScholarship ID " + id + "? (Y/n) : ");
             if (confirm.equalsIgnoreCase("y")) {
                 scholarshipService.deleteScholarship(id);
-                System.out.println("Deleted.");
+                printTrue("Deleted.");
             }
+        }}
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
+
+    }
+
+    /* end admin */
+
+
+    /* user */
+
+    public static void applyScholarship() {
+
+        renderHeader("Apply Scholarship");
+        viewAllScholarship();
+        int sId;
+
+        while (true) {
+            sId = readInt("Enter Scholarship ID : ");
+
+            if (scholarshipService.getScholarshipById(sId) == null) {
+                continue;
+            }// handle already in getScholarshipById
+
+            if (enrollmentService.isAlreadyEnrolled(currentUser.getId(), sId)) {
+                printErr("You have already applied for this scholarship! Choose another.");
+                continue;
+            }
+
+            break;
+        }
+
+        try{
+            String name = readString("Full Name : ");
+            String gender = readGender("Gender (M/F) : ");
+            LocalDate dob = readDate("DOB (YYYY-MM-DD) : ");
+            String phone = readPhoneNumber("Phone Number");
+            int year = readYear("Current Year Level : ");
+            String school = readString("School Name : ");
+            String major = readString("Major : ");
+            String payMethod = readString("Payment Method (CASH/MOBILE) : ");
+
+            Enrollment e = Enrollment.builder()
+                .scholarshipId(sId)
+                .userId(currentUser.getId())
+                .fullName(name)
+                .gender(gender)
+                .dob(dob)
+                .phoneNumber(phone)
+                .yearLevel(year)
+                .school(school)
+                .major(major)
+                .paymentMethod(payMethod)
+                .build();
+
+            enrollmentService.applyForScholarship(e);
+            printTrue("Application submitted successfully!");
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
         }
     }
 
+    public static void viewOwnEnrollment() {
+
+        List<Enrollment> list = enrollmentService.getMyEnrollments(currentUser.getId());
+        if (list.isEmpty()) {
+            printWarn("You have no active applications.");
+            return;
+        }
+        renderViewOwnEnrollment(list);
+    }
+
+    public static void updateOwnEnrollment() {
+        viewOwnEnrollment();
+        int id = readInt("Enter Enrollment ID to update: ");
+
+        try {
+
+            Enrollment existing = enrollmentService.getEnrollmentById(id);
+
+            if (existing == null || !existing.getUserId().equals(currentUser.getId())) {
+                printWarn("Enrollment not found or access denied.");
+                return;
+            }
+
+            printWarn("Press (Enter) to keep current data...");
+
+            printCurrent("(Current : " + existing.getFullName() + ")");
+            String name = readOptionalString("Enter new Name : ");
+            if (name != null) existing.setFullName(name);
+
+            printCurrent("(Current : " + existing.getGender() + ")");
+            String gender = readOptionalString("Enter new Gender (M/F) : ");
+            if (gender != null) existing.setGender(gender);
+
+            printCurrent("(Current : " + existing.getDob() + ")");
+            LocalDate dob = readOptionalDate("Enter new DOB (YYYY-MM-DD) : ");
+            if (dob != null) existing.setDob(dob);
+
+            printCurrent("(Current : " + existing.getPhoneNumber() + ")");
+            String phone = readOptionalString("Enter new Phone Number : ");
+            if (phone != null) existing.setPhoneNumber(phone);
+
+            printCurrent("(Current : " + existing.getYearLevel() + ")");
+            Integer year = readOptionalInt("Enter new Year Level : ");
+            if (year != null) existing.setYearLevel(year);
+
+            printCurrent("(Current : " + existing.getSchool() + ")");
+            String school = readOptionalString("Enter new School Name : ");
+            if (school != null) existing.setSchool(school);
+
+            printCurrent("(Current : " + existing.getMajor() + ")");
+            String major = readOptionalString("Enter new Major : ");
+            if (major != null) existing.setMajor(major);
+
+            printCurrent("(Current : " + existing.getPaymentMethod() + ")");
+            String payMethod = readOptionalString("Enter new Payment Method : ");
+            if (payMethod != null) existing.setPaymentMethod(payMethod);
+
+            if (enrollmentService.updateMyEnrollment(existing)) {
+                printTrue("Enrollment updated successfully!");
+            }
+
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
+    }
+
+    public static void deleteOwnEnrollment() {
+        viewOwnEnrollment();
+        int id = readInt("Enter Enrollment ID to cancel: ");
+
+        try {
+
+            if (enrollmentService.cancelMyEnrollment(id, currentUser.getId())) {
+                printTrue("Enrollment cancelled.");
+            } else {
+                printErr("Failed to cancel. Check ID.");
+            }
+        }
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
+    }
+
+    /* end user */
 }

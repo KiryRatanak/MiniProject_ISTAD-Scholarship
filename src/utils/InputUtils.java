@@ -23,6 +23,62 @@ public class InputUtils {
         }
     }
 
+    public static int readYear(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                int year = Integer.parseInt(scanner.nextLine());
+
+                if (year >= 0 && year <= 5) {
+                    return year;
+                } else {
+                    printErr("Please enter a year between 0 and 5.");
+                }
+            } catch (NumberFormatException e) {
+                printErr("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+
+    public static String readPhoneNumber(String prompt) {
+        while (true) {
+            System.out.print(prompt + " (e.g. +855 ...): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.length() >= 12 && input.length() <= 20) {
+
+                if (input.matches("^\\+[\\d\\s]+")) {
+                    return input;
+                } else {
+                    printErr("Format must start with '+' and contain only numbers/spaces.");
+                }
+
+            } else {
+                printErr("Invalid Input.");
+            }
+        }
+    }
+
+    public static String readOptionalPhoneNumber(String prompt, String current) {
+        while (true) {
+            printCurrent("(Current : " + current + ")");
+            System.out.print(prompt + " (e.g. +855... ): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) return null;
+
+            if (input.length() >= 9 && input.length() <= 17) {
+                if (input.matches("^\\+[\\d\\s]+")) {
+                    return input;
+                } else {
+                    printErr("Format must start with '+' and contain only numbers/spaces.");
+                }
+            } else {
+                printErr("Length must be between 9 and 17 characters.");
+            }
+        }
+    }
+
     public static BigDecimal readBigDecimal(String label) {
         while (true) {
             System.out.print(label);
@@ -44,18 +100,6 @@ public class InputUtils {
             System.out.println( RED + "Error: Input must be between " + min + " and " + max + RESET);
         }
     }
-
-    public static double readDouble(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                return Double.parseDouble(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                printErr("Invalid input. Please enter a decimal number.");
-            }
-        }
-    }
-
 
     public static void print(Object msg) {
         System.out.print(msg);
@@ -89,66 +133,33 @@ public class InputUtils {
         }
     }
 
-    public static boolean readOptionalBoolean(String label, boolean defaultValue) {
-        System.out.print(label + " (y/n, default " + (defaultValue ? "y" : "n") + "): ");
-        String input = scanner.nextLine().trim().toLowerCase();
-
-        if (input.isEmpty()) {
-            return defaultValue;
-        }
-        return input.startsWith("y");
-    }
-
     public static void readEnter(String message) {
         print(message);
         scanner.nextLine();
     }
 
-    public static boolean readBoolean(String prompt) {
-        while (true) {
-            System.out.print(prompt + " (Y/n): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("y") || input.equals("yes")) return true;
-            if (input.equals("n") || input.equals("no")) return false;
-            System.out.println("Please enter 'Y' or 'n'.");
-        }
-    }
-
     public static LocalDate readDate(String prompt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         while (true) {
-            System.out.print(prompt + " (yyyy-MM-dd): ");
+            System.out.print(prompt);
             String input = scanner.nextLine().trim();
             try {
                 return LocalDate.parse(input, formatter);
             } catch (DateTimeParseException e) {
-                printErr("Invalid format. Please use YYYY-MM-DD (e.g., 2026-02-02).");
+                printErr("Invalid format. Please use YYYY-MM-DD (e.g., 2001-01-01).");
             }
         }
     }
 
-    public static LocalDate readOptionalDate(String prompt, boolean mustBeInPast) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+    public static LocalDate readOptionalDate(String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
-
-            if (input.isEmpty()) {
-                return null;
-            }
-
+            if (input.isEmpty()) return null;
             try {
-                LocalDate date = LocalDate.parse(input, formatter);
-
-                if (mustBeInPast && date.isAfter(LocalDate.now())) {
-                    printErr("Error: Date cannot be in the future.");
-                    continue;
-                }
-
-                return date;
+                return LocalDate.parse(input);
             } catch (DateTimeParseException e) {
-                printErr("Invalid format. Please use YYYY-MM-DD.");
+                printErr("Invalid Format! Use YYYY-MM-DD.");
             }
         }
     }
@@ -163,7 +174,7 @@ public class InputUtils {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return null; // Using Integer object allows null
+            if (input.isEmpty()) return null;
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
@@ -172,20 +183,30 @@ public class InputUtils {
         }
     }
 
-    public static Double readOptionalDouble(String prompt) {
+    public static String readGender(String prompt) {
         while (true) {
             System.out.print(prompt);
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine().trim().toUpperCase();
 
-            if (input.isEmpty()) {
-                return null;
+            if (input.equals("M") || input.equals("F")) {
+                return input;
             }
+            printErr("Invalid Gender! Please enter 'M' for Male or 'F' for Female.");
+        }
+    }
 
-            try {
-                return Double.parseDouble(input);
-            } catch (NumberFormatException e) {
-                printErr("Invalid input. Please enter a valid decimal number (e.g., 12.5).");
+    public static String readOptionalGender(String prompt, String current) {
+        while (true) {
+            printCurrent("(Current : " + current + ")");
+            System.out.print(prompt + " (Enter to skip): ");
+            String input = scanner.nextLine().trim().toUpperCase();
+
+            if (input.isEmpty()) return null;
+
+            if (input.equals("M") || input.equals("F")) {
+                return input;
             }
+            printErr("Invalid! Use 'M', 'F', or press Enter.");
         }
     }
 }

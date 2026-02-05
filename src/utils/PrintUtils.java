@@ -22,7 +22,7 @@ public class PrintUtils {
 
 
     public static void printWarn(String msg) {
-        System.out.println(YELLOW + "[!] " + msg + RESET);
+        System.out.println(YELLOW + "[⚠] " + msg + RESET);
     }
 
     public static void pressEnter() {
