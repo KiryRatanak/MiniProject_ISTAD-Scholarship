@@ -4,8 +4,10 @@ import model.Scholarship;
 import service.ScholarshipService;
 import service.impl.ScholarshipServiceImpl;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static service.impl.UserServiceImpl.userService;
 import static utils.InputUtils.*;
@@ -14,12 +16,12 @@ import static views.Colors.*;
 import static views.Tables.*;
 
 public class Menus {
-    private static final ScholarshipService scholarshipService = new ScholarshipServiceImpl();
+    public static final ScholarshipService scholarshipService = new ScholarshipServiceImpl();
 
     public static void run() throws SQLException {
         while (true) {
             renderStartMenu();
-            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,2);
+            int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,2);
 
             switch (choice) {
                 case 1 -> userService.login();
@@ -38,7 +40,7 @@ public class Menus {
         while (true) {
 
             renderAdminMenu();
-            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,2);
+            int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,2);
 
             switch (choice){
                 case 1 -> scholarshipMenu();
@@ -55,7 +57,7 @@ public class Menus {
         while (true) {
 
             renderScholarshipMenu();
-            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,5);
+            int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,5);
 
             switch (choice) {
                 case 1 -> createScholarship();
@@ -75,7 +77,7 @@ public class Menus {
         while (true) {
 
             renderEnrollmentMenu();
-            int choice = readIntInRange(PURPLE+"> Choose: "+RESET,0,5);
+            int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,5);
 
             switch (choice) {
 //                case 1 -> createScholarship();
@@ -86,7 +88,7 @@ public class Menus {
                 case 0 -> {
                     return;
                 }
-                default -> printErr("Invalid choice..!");
+                default -> printErr("Invalid choice.");
             }
         }
     }
@@ -98,64 +100,92 @@ public class Menus {
         s.setType(readString("Enter Type : "));
         s.setDescription(readString("Enter Description : "));
         s.setScholarship(readInt("Enter Scholarship : "));
-        s.setFullPrice(readBigDecimal("Enter Full Price: "));
-        s.setSponsor(readString("Enter Sponsor: "));
-        s.setDuration(readString("Enter Duration: "));
-        s.setMaxQuota(readInt("Enter Max Quota: "));
-        s.setYearLevel(readInt("Enter Year Level: "));
-        s.setWeek(readString("Enter Week: "));
+        s.setFullPrice(readBigDecimal("Enter Full Price : "));
+        s.setSponsor(readString("Enter Sponsor : "));
+        s.setDuration(readString("Enter Duration : "));
+        s.setMaxQuota(readInt("Enter Max Quota : "));
+        s.setYearLevel(readInt("Enter Year Level : "));
+        s.setWeek(readString("Enter Week : "));
         s.setIsEnabled(true);
 
-        // Call service to save to DB
         scholarshipService.createScholarship(s);
         printTrue("Scholarship created successfully!");
     }
 
     public static void searchScholarshipById() {
-        int id = readInt("Enter Scholarship ID: ");
+
+        int id = readInt("Enter Scholarship ID : ");
+
         Scholarship s = scholarshipService.getScholarshipById(id);
+
         if (s != null) {
-            System.out.println("Result: " + s);
+            System.out.println("✅ Found Result :");
+            renderSearchScholarship(s);
         }
     }
 
     public static void viewAllScholarship() {
         List<Scholarship> list = scholarshipService.getAllScholarships();
-        list.forEach(System.out::println);
+        renderAllScholarship(list);
     }
 
     public static void updateScholarship() {
-        int id = readInt("Enter ID of scholarship to updateScholarship: ");
+        int id = readInt("Enter ID to update : ");
         printWarn("Press (Enter) to keep data...");
         Scholarship existing = scholarshipService.getScholarshipById(id);
         if (existing == null) {
-            System.out.println("Scholarship not found!");
+            printErr("Scholarship not found.");
             return;
         }
 
-        existing.setType(readOptionalString("Enter new Type (current: " + existing.getSponsor() + "): "));
-        existing.setDescription(readOptionalString("Enter new Description (current: " + existing.getSponsor() + "): "));
-        existing.setScholarship(readOptionalInt("Enter new Scholarship (current: " + existing.getSponsor() + "): "));
-        existing.setFullPrice(readBigDecimal("Enter new Full Price (current: " + existing.getSponsor() + "): "));
-        existing.setSponsor(readOptionalString("Enter new Sponsor (current: " + existing.getSponsor() + "): "));
-        existing.setDuration(readOptionalString("Enter new Duration (current: " + existing.getSponsor() + "): "));
-        existing.setMaxQuota(readOptionalInt("Enter new Max Quota (current: " + existing.getSponsor() + "): "));
-        existing.setYearLevel(readOptionalInt("Enter new Year Level (current: " + existing.getSponsor() + "): "));
-        existing.setWeek(readOptionalString("Enter new Week (current: " + existing.getSponsor() + "): "));
+        printCurrent("(Current : " + existing.getType() + ")");
+        String type = readOptionalString("Enter new Type : ");
+        if (type != null) existing.setType(type);
+
+        printCurrent("(Current : " + existing.getDescription() + ")");
+        String desc = readOptionalString("Enter new Description : ");
+        if (desc != null) existing.setDescription(desc);
+
+        printCurrent("(Current : " + existing.getScholarship() + ")");
+        Integer scholarship = readOptionalInt("Enter new Scholarship : ");
+        if (scholarship != null) existing.setScholarship(scholarship);
+
+        printCurrent("(Current : " + existing.getFullPrice() + ")");
+        BigDecimal price = readOptionalBigDecimal("Enter new Full Price : ");
+        if (price != null) existing.setFullPrice(price);
+
+        printCurrent("(Current : " + existing.getSponsor() + ")");
+        String sponsor = readOptionalString("Enter new Sponsor : ");
+        if (sponsor != null) existing.setSponsor(sponsor);
+
+        printCurrent("(Current : " + existing.getDuration() + ")");
+        String duration = readOptionalString("Enter new Duration : ");
+        if (duration != null) existing.setDuration(duration);
+
+        printCurrent("(Current : " + existing.getMaxQuota() + ")");
+        Integer quota = readOptionalInt("Enter new Max Quota : ");
+        if (quota != null) existing.setMaxQuota(quota);
+
+        printCurrent("(Current : " + existing.getYearLevel() + ")");
+        Integer year = readOptionalInt("Enter new Year Level : ");
+        if (year != null) existing.setYearLevel(year);
+
+        printCurrent("(Current : " + existing.getWeek() + ")");
+        String week = readOptionalString("Enter new Week : ");
+        if (week != null) existing.setWeek(week);
         existing.setIsEnabled(true);
 
 
-        // Call service to push updates to DB
         scholarshipService.updateScholarship(existing);
-        System.out.println("Scholarship updated!");
+        printTrue("Scholarship updated!");
     }
 
     public static void deleteScholarship() {
-        int id = readInt("Enter ID to deleteScholarship");
+        int id = readInt("Enter ID to delete : ");
 
         Scholarship s = scholarshipService.getScholarshipById(id);
         if (s != null) {
-            String confirm = readString("Are you sure you want to deleteScholarship ID " + id + "? (Y/n): ");
+            String confirm = readString("Are you sure to deleteScholarship ID " + id + "? (Y/n) : ");
             if (confirm.equalsIgnoreCase("y")) {
                 scholarshipService.deleteScholarship(id);
                 System.out.println("Deleted.");

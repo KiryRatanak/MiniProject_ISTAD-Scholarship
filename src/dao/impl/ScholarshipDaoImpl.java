@@ -96,11 +96,11 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
     @Override
     public void update(Scholarship scholarship) {
         String sql = """
-        UPDATE scholarships SET 
-        type = ?, description = ?, scholarship = ?, full_price = ?, 
-        sponsor = ?, duration = ?, max_quota = ?, year_level = ?, 
-        week = ?, is_enabled = ? 
-        WHERE id = ?
+    UPDATE scholarships SET 
+    type = ?, description = ?, scholarship = ?, full_price = ?, 
+    sponsor = ?, duration = ?, max_quota = ?, year_level = ?, 
+    week = ?, is_enabled = ? 
+    WHERE id = ?
     """;
 
         try (Connection conn = DBConfig.getConnection();
@@ -108,12 +108,13 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
             pstmt.setString(1, scholarship.getType());
             pstmt.setString(2, scholarship.getDescription());
-            pstmt.setInt(3, scholarship.getScholarship());
+            pstmt.setObject(3, scholarship.getScholarship(), java.sql.Types.INTEGER);
             pstmt.setBigDecimal(4, scholarship.getFullPrice());
             pstmt.setString(5, scholarship.getSponsor());
             pstmt.setString(6, scholarship.getDuration());
-            pstmt.setInt(7, scholarship.getMaxQuota());
-            pstmt.setInt(8, scholarship.getYearLevel());
+            pstmt.setObject(7, scholarship.getMaxQuota(), java.sql.Types.INTEGER);
+            pstmt.setObject(8, scholarship.getYearLevel(), java.sql.Types.INTEGER);
+
             pstmt.setString(9, scholarship.getWeek());
             pstmt.setBoolean(10, scholarship.getIsEnabled());
             pstmt.setInt(11, scholarship.getId());
@@ -123,7 +124,6 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
             e.printStackTrace();
         }
     }
-
     @Override
     public void deleteById(int id) {
         String sql = "DELETE FROM scholarships WHERE id = ?";

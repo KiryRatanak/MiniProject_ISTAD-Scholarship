@@ -12,16 +12,13 @@ import static views.Colors.*;
 public class InputUtils {
     private static final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Reads an integer with basic type validation.
-     */
     public static int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
             try {
                 return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                printErr( "Invalid input. Please enter a whole number.");
+                printErr( "Invalid input. Please enter number.");
             }
         }
     }
@@ -38,9 +35,6 @@ public class InputUtils {
         }
     }
 
-    /**
-     * Reads an integer within a specific range [min, max].
-     */
     public static int readIntInRange(String prompt, int min, int max) {
         while (true) {
             int input = readInt(prompt);
@@ -51,9 +45,6 @@ public class InputUtils {
         }
     }
 
-    /**
-     * Reads a double with basic type validation.
-     */
     public static double readDouble(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -70,9 +61,6 @@ public class InputUtils {
         System.out.print(msg);
     }
 
-    /**
-     * Reads a non-empty string.
-     */
     public static String readString(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -81,6 +69,23 @@ public class InputUtils {
                 return input;
             }
             printErr("Input cannot be empty.");
+        }
+    }
+
+    public static BigDecimal readOptionalBigDecimal(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                return null; // User skipped
+            }
+
+            try {
+                return new BigDecimal(input);
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid number! Please enter a valid decimal (e.g., 99.99).");
+            }
         }
     }
 
@@ -99,9 +104,6 @@ public class InputUtils {
         scanner.nextLine();
     }
 
-    /**
-     * Reads a yes/no confirmation.
-     */
     public static boolean readBoolean(String prompt) {
         while (true) {
             System.out.print(prompt + " (Y/n): ");
@@ -112,9 +114,6 @@ public class InputUtils {
         }
     }
 
-    /**
-     * Reads a date in yyyy-MM-dd format with optional validation.
-     */
     public static LocalDate readDate(String prompt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         while (true) {
@@ -132,10 +131,9 @@ public class InputUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         while (true) {
-            System.out.print(prompt + " (yyyy-MM-dd) [Optional - Press Enter to skip]: ");
+            System.out.print(prompt);
             String input = scanner.nextLine().trim();
 
-            // Handle the "Optional" part
             if (input.isEmpty()) {
                 return null;
             }
@@ -143,7 +141,6 @@ public class InputUtils {
             try {
                 LocalDate date = LocalDate.parse(input, formatter);
 
-                // Optional Validation: Check if it's in the past
                 if (mustBeInPast && date.isAfter(LocalDate.now())) {
                     printErr("Error: Date cannot be in the future.");
                     continue;
@@ -156,21 +153,15 @@ public class InputUtils {
         }
     }
 
-    /**
-     * Optional String: Returns null if input is empty.
-     */
     public static String readOptionalString(String prompt) {
-        System.out.print(prompt + " (enter to skip): ");
+        System.out.print(prompt);
         String input = scanner.nextLine().trim();
         return input.isEmpty() ? null : input;
     }
 
-    /**
-     * Optional Integer: Returns -1 (or any sentinel value) if empty.
-     */
     public static Integer readOptionalInt(String prompt) {
         while (true) {
-            System.out.print(prompt + " (Leave blank to skip): ");
+            System.out.print(prompt);
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) return null; // Using Integer object allows null
             try {
@@ -181,12 +172,9 @@ public class InputUtils {
         }
     }
 
-    /**
-     * Reads a double. Returns null if the user leaves it blank.
-     */
     public static Double readOptionalDouble(String prompt) {
         while (true) {
-            System.out.print(prompt + " (Decimal) [Optional - Press Enter to skip]: ");
+            System.out.print(prompt);
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {

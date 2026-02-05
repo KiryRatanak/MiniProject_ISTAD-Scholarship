@@ -16,6 +16,10 @@ public class PrintUtils {
         System.out.println(RED + "[❌] " + msg + ".!" + RESET);
     }
 
+    public static void printCurrent(String msg) {
+        System.out.println(PURPLE + "[~] " + msg + RESET);
+    }
+
 
     public static void printWarn(String msg) {
         System.out.println(YELLOW + "[!] " + msg + RESET);

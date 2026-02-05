@@ -1,9 +1,14 @@
 package views;
 
+import model.Scholarship;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.util.List;
+
+import static utils.PrintUtils.*;
 import static views.Colors.*;
+
 
 public class Tables {
     public static void renderStartMenu(){
@@ -45,6 +50,65 @@ public class Tables {
         t.addCell(BLUE + "4. Update Enrollment" + RESET);
         t.addCell(BLUE + "5. Delete Enrollment" + RESET);
         t.addCell(RED + "0. Back" + RESET);
+        System.out.println(t.render());
+    }
+
+    public static void renderSearchScholarship(Scholarship s) {
+
+        Table t = new Table(10, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+
+        t.addCell("Id");
+        t.addCell("Type");
+        t.addCell("Description");
+        t.addCell("Scholarship");
+        t.addCell("Full Price");
+        t.addCell("Sponsor");
+        t.addCell("Duration");
+        t.addCell("Quota");
+        t.addCell("Year");
+        t.addCell("Status");
+
+        t.addCell(String.valueOf(s.getId()));
+        t.addCell(s.getType());
+        t.addCell(s.getDescription() != null ? s.getDescription() : "N/A");
+        t.addCell(s.getScholarship() + "%");
+        t.addCell("$" + s.getFullPrice());
+        t.addCell(s.getSponsor());
+        t.addCell(s.getDuration());
+        t.addCell(String.valueOf(s.getMaxQuota()));
+        t.addCell(String.valueOf(s.getYearLevel()));
+        t.addCell(s.getIsEnabled() ? "Active" : "Disabled");
+
+        System.out.println(t.render());
+    }
+
+    public static void renderAllScholarship(List<Scholarship> scholarships) {
+        Table t = new Table(10, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+
+        t.addCell("Id");
+        t.addCell("Type");
+        t.addCell("Description");
+        t.addCell("Scholarship");
+        t.addCell("Full Price");
+        t.addCell("Sponsor");
+        t.addCell("Duration");
+        t.addCell("Quota");
+        t.addCell("Year");
+        t.addCell("Status");
+
+        for (Scholarship s : scholarships) {
+            t.addCell(String.valueOf(s.getId()));
+            t.addCell(s.getType());
+            t.addCell(s.getDescription());
+            t.addCell(String.valueOf(s.getScholarship()));
+            t.addCell(s.getFullPrice().toString());
+            t.addCell(s.getSponsor());
+            t.addCell(s.getDuration());
+            t.addCell(String.valueOf(s.getMaxQuota()));
+            t.addCell(String.valueOf(s.getYearLevel()));
+            t.addCell(s.getIsEnabled() ? "Active" : "Disabled");
+        }
+
         System.out.println(t.render());
     }
 }
