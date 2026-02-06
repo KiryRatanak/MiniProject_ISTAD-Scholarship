@@ -1,8 +1,6 @@
 package service.impl;
 
-import dao.EnrollmentDao;
 import dao.ScholarshipDao;
-import dao.impl.EnrollmentDaoImpl;
 import dao.impl.ScholarshipDaoImpl;
 import model.Scholarship;
 import service.ScholarshipService;
@@ -44,12 +42,13 @@ public class ScholarshipServiceImpl implements ScholarshipService {
     }
 
     @Override
-    public void updateScholarship(Scholarship scholarship) {
+    public boolean updateScholarship(Scholarship scholarship) {
         if (scholarship != null && scholarship.getId() != null) {
-            scholarshipDao.update(scholarship);
+            scholarshipDao.updateScholarship(scholarship);
         } else {
             printErr("Update failed: Invalid scholarship data.");
         }
+        return false;
     }
 
     @Override

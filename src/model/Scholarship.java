@@ -23,4 +23,5 @@ public class Scholarship {
     private Integer yearLevel;
     private String week;
     private Boolean isEnabled =true ;
+
 }

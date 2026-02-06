@@ -180,4 +180,54 @@ public class Tables {
 
         System.out.println(t.render());
     }
+
+    public static void renderAllEnrollment(List<Enrollment> list) {
+        if (list.isEmpty()) {
+            printWarn("No enrollment records found for this page.");
+            return;
+        }
+
+        Table table = new Table(12, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+
+        String[] headers = {
+                "ID", "USER ID", "SCHOLAR ID", "STUDENT NAME", "GENDER",
+                "DOB", "PHONE", "YEAR", "SCHOOL", "MAJOR", "STATUS", "METHOD"
+        };
+
+        for (String header : headers) {
+            table.addCell(" " + header);
+        }
+
+        // Add Rows from the List
+        for (Enrollment e : list) {
+            table.addCell(String.valueOf(e.getId()));
+            table.addCell(String.valueOf(e.getUserId()));
+            table.addCell(String.valueOf(e.getScholarshipId()));
+            table.addCell(e.getFullName());
+            table.addCell(e.getGender());
+            Object dob = e.getDob();
+            table.addCell(dob != null ? dob.toString() : "N/A");
+            table.addCell(e.getPhoneNumber());
+            table.addCell(String.valueOf(e.getYearLevel()));
+            table.addCell(truncate(e.getSchool(), 15));
+            table.addCell(truncate(e.getMajor(), 15));
+
+            // Color coding for Status
+            String status = e.getPaymentStatus().toUpperCase();
+            if (status.contains("PAID")) {
+                table.addCell(Colors.GREEN + status + Colors.RESET);
+            } else {
+                table.addCell(Colors.YELLOW + status + Colors.RESET);
+            }
+
+            table.addCell(e.getPaymentMethod() != null ? e.getPaymentMethod() : "CASH");
+        }
+
+        System.out.println(table.render());
+    }
+
+    private static String truncate(String text, int size) {
+        if (text == null) return "N/A";
+        return text.length() > size ? text.substring(0, size - 3) + ".." : text;
+    }
 }

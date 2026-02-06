@@ -42,4 +42,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public boolean isAlreadyEnrolled(int userId, int scholarshipId) {
         return enrollmentDao.existsByUserIdAndScholarshipId(userId, scholarshipId);
     }
+
+    @Override
+    public List<Enrollment> getAllEnrollments(int limit, int offset) {
+        // If you need to filter or log data before returning it, do it here.
+        return enrollmentDao.getAllEnrollments(limit, offset);
+    }
+
+    @Override
+    public List<Enrollment> searchEnrollments(String keyword, int limit, int offset) {
+        return enrollmentDao.searchEnrollments(keyword, limit, offset);
+    }
+
+    @Override
+    public boolean updateEnrollment(Enrollment e) {
+        return enrollmentDao.updateEnrollment(e);
+    }
+
+    @Override
+    public boolean deleteEnrollment(int id) {
+        return enrollmentDao.deleteEnrollment(id);
+    }
+
 }

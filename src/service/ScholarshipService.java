@@ -1,6 +1,5 @@
 package service;
 
-import model.Enrollment;
 import model.Scholarship;
 
 import java.util.List;
@@ -12,6 +11,6 @@ public interface ScholarshipService {
 
     Scholarship getScholarshipById(int id);
     List<Scholarship> getAllScholarships();
-    void updateScholarship(Scholarship scholarship);
+    boolean updateScholarship(Scholarship scholarship);
     void deleteScholarship(int id);
 }

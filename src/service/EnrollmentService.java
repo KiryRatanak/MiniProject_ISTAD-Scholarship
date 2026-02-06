@@ -15,4 +15,12 @@ public interface EnrollmentService {
     Enrollment getEnrollmentById(int id);
 
     boolean isAlreadyEnrolled(int userId, int scholarshipId);
+
+    List<Enrollment> getAllEnrollments(int limit, int offset);
+
+    List<Enrollment> searchEnrollments(String keyword, int limit, int offset);
+
+    boolean updateEnrollment(Enrollment e);
+
+    boolean deleteEnrollment(int id);
 }

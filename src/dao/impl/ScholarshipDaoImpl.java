@@ -4,6 +4,7 @@ import config.DBConfig;
 import dao.ScholarshipDao;
 import model.Scholarship;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,33 +95,34 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
     }
 
     @Override
-    public void update(Scholarship scholarship) {
-        String sql = """
-    UPDATE scholarships SET 
-    type = ?, description = ?, scholarship = ?, full_price = ?, 
-    sponsor = ?, duration = ?, max_quota = ?, year_level = ?, 
-    week = ?, is_enabled = ? 
-    WHERE id = ?
-    """;
+    public boolean updateScholarship(Scholarship s) {
+        String sql = "UPDATE scholarships SET type = ?, description = ?, scholarship = ?, " +
+                "full_price = ?, sponsor = ?, duration = ?, max_quota = ?, " +
+                "year_level = ?, week = ?, is_enabled = ? WHERE id = ?";
 
         try (Connection conn = DBConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, scholarship.getType());
-            pstmt.setString(2, scholarship.getDescription());
-            pstmt.setObject(3, scholarship.getScholarship(), java.sql.Types.INTEGER);
-            pstmt.setBigDecimal(4, scholarship.getFullPrice());
-            pstmt.setString(5, scholarship.getSponsor());
-            pstmt.setString(6, scholarship.getDuration());
-            pstmt.setObject(7, scholarship.getMaxQuota(), java.sql.Types.INTEGER);
-            pstmt.setObject(8, scholarship.getYearLevel(), java.sql.Types.INTEGER);
-            pstmt.setString(9, scholarship.getWeek());
-            pstmt.setBoolean(10, scholarship.getIsEnabled());
-            pstmt.setInt(11, scholarship.getId());
+            // We use s.getXXX() directly.
+            // If s was updated correctly in the menu, these will be the 'old values'.
+            pstmt.setString(1, s.getType());
+            pstmt.setString(2, s.getDescription());
 
-            pstmt.executeUpdate();
+            // Use setObject for Integers to handle nulls gracefully if they somehow slip through
+            pstmt.setObject(3, s.getScholarship());
+            pstmt.setBigDecimal(4, s.getFullPrice());
+            pstmt.setString(5, s.getSponsor());
+            pstmt.setString(6, s.getDuration());
+            pstmt.setObject(7, s.getMaxQuota());
+            pstmt.setObject(8, s.getYearLevel());
+            pstmt.setString(9, s.getWeek());
+            pstmt.setBoolean(10, s.getIsEnabled());
+            pstmt.setInt(11, s.getId());
+
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            printErr("❌ Database Error: " + e.getMessage());
+            return false;
         }
     }
 
@@ -167,18 +169,20 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
     }
 
     private Scholarship mapResultSetToScholarship(ResultSet rs) throws SQLException {
-        return Scholarship.builder()
-                .id(rs.getInt("id"))
-                .type(rs.getString("type"))
-                .description(rs.getString("description"))
-                .scholarship(rs.getInt("scholarship"))
-                .fullPrice(rs.getBigDecimal("full_price"))
-                .sponsor(rs.getString("sponsor"))
-                .duration(rs.getString("duration"))
-                .maxQuota(rs.getInt("max_quota"))
-                .yearLevel(rs.getInt("year_level"))
-                .week(rs.getString("week"))
-                .isEnabled(rs.getBoolean("is_enabled"))
-                .build();
+        Scholarship s = new Scholarship();
+
+        s.setId(rs.getInt("id"));
+        s.setType(rs.getString("type") != null ? rs.getString("type") : "");
+        s.setDescription(rs.getString("description") != null ? rs.getString("description") : "No description");
+        s.setSponsor(rs.getString("sponsor") != null ? rs.getString("sponsor") : "N/A");
+        s.setDuration(rs.getString("duration") != null ? rs.getString("duration") : "");
+        s.setWeek(rs.getString("week") != null ? rs.getString("week") : "");
+        s.setScholarship(rs.getObject("scholarship") != null ? rs.getInt("scholarship") : 0);
+        s.setMaxQuota(rs.getObject("max_quota") != null ? rs.getInt("max_quota") : 0);
+        s.setYearLevel(rs.getObject("year_level") != null ? rs.getInt("year_level") : 1);
+        s.setFullPrice(rs.getBigDecimal("full_price") != null ? rs.getBigDecimal("full_price") : java.math.BigDecimal.ZERO);
+        s.setIsEnabled(rs.getBoolean("is_enabled"));
+
+        return s;
     }
 }

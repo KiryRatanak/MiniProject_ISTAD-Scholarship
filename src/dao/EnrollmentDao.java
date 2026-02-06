@@ -6,6 +6,8 @@ import java.util.List;
 public interface EnrollmentDao {
     List<Enrollment> fetchByPage(int limit, int offset);
 
+    List<Enrollment> getAllEnrollments(int limit, int offset);
+
     void insert(Enrollment enrollment);
 
     List<Enrollment> selectByUserId(int userId);
@@ -17,4 +19,10 @@ public interface EnrollmentDao {
     Enrollment getById(int id);
 
     boolean existsByUserIdAndScholarshipId(int userId, int scholarshipId);
+
+    List<Enrollment> searchEnrollments(String keyword, int limit, int offset);
+
+    boolean updateEnrollment(Enrollment e);
+
+    boolean deleteEnrollment(int id);
 }

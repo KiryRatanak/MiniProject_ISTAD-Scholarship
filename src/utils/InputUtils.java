@@ -59,24 +59,16 @@ public class InputUtils {
         }
     }
 
-    public static String readOptionalPhoneNumber(String prompt, String current) {
-        while (true) {
-            printCurrent("(Current : " + current + ")");
-            System.out.print(prompt + " (e.g. +855... ): ");
-            String input = scanner.nextLine().trim();
+    public static String readOptionalPhoneNumber(String prompt, String oldValue) {
+        System.out.print(prompt + " [" + (oldValue != null ? oldValue : "N/A") + "]: ");
+        String input = scanner.nextLine().trim();
+        if (input.isEmpty()) return oldValue;
 
-            if (input.isEmpty()) return null;
-
-            if (input.length() >= 9 && input.length() <= 17) {
-                if (input.matches("^\\+[\\d\\s]+")) {
-                    return input;
-                } else {
-                    printErr("Format must start with '+' and contain only numbers/spaces.");
-                }
-            } else {
-                printErr("Length must be between 9 and 17 characters.");
-            }
+        if (input.matches("\\d{9,15}")) {
+            return input;
         }
+        printWarn("Invalid phone format. Keeping old value.");
+        return oldValue;
     }
 
     public static boolean isInteger(String str) {
@@ -120,20 +112,18 @@ public class InputUtils {
         }
     }
 
-    public static BigDecimal readOptionalBigDecimal(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim();
+    public static BigDecimal readOptionalBigDecimal(String prompt, BigDecimal oldValue) {
+        String display = (oldValue == null) ? "0.00" : oldValue.toString();
+        System.out.print(prompt + " [" + display + "]: ");
+        String input = scanner.nextLine().trim();
 
-            if (input.isEmpty()) {
-                return null; // User skipped
-            }
+        if (input.isEmpty()) return oldValue;
 
-            try {
-                return new BigDecimal(input);
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Invalid number! Please enter a valid decimal (e.g., 99.99).");
-            }
+        try {
+            return new BigDecimal(input);
+        } catch (Exception e) {
+            printWarn("Invalid price. Keeping old value.");
+            return oldValue;
         }
     }
 
@@ -155,35 +145,39 @@ public class InputUtils {
         }
     }
 
-    public static LocalDate readOptionalDate(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return null;
-            try {
-                return LocalDate.parse(input);
-            } catch (DateTimeParseException e) {
-                printErr("Invalid Format! Use YYYY-MM-DD.");
-            }
+    public static LocalDate readOptionalDate(String prompt, LocalDate oldValue) {
+        System.out.print(prompt + " [" + (oldValue != null ? oldValue : "yyyy-MM-dd") + "]: ");
+        String input = scanner.nextLine().trim();
+        if (input.isEmpty()) return oldValue;
+
+        try {
+            return LocalDate.parse(input);
+        } catch (Exception e) {
+            printWarn("Invalid date format. Keeping old value.");
+            return oldValue;
         }
     }
 
-    public static String readOptionalString(String prompt) {
-        System.out.print(prompt);
+    public static String readOptionalString(String prompt, String oldValue) {
+        System.out.print(prompt + " [" + (oldValue == null ? "" : oldValue) + "]: ");
         String input = scanner.nextLine().trim();
-        return input.isEmpty() ? null : input;
+        return input.isEmpty() ? oldValue : input;
     }
 
-    public static Integer readOptionalInt(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return null;
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                printErr("Invalid input. Please enter a number.");
-            }
+
+
+    public static Integer readOptionalInt(String prompt, Integer oldValue) {
+        String display = (oldValue == null) ? "0" : oldValue.toString();
+        System.out.print(prompt + " [" + display + "]: ");
+        String input = scanner.nextLine().trim();
+
+        if (input.isEmpty()) return oldValue;
+
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            printWarn("Invalid number. Keeping old value.");
+            return oldValue;
         }
     }
 
@@ -199,18 +193,14 @@ public class InputUtils {
         }
     }
 
-    public static String readOptionalGender(String prompt, String current) {
-        while (true) {
-            printCurrent("(Current : " + current + ")");
-            System.out.print(prompt + " (Enter to skip): ");
-            String input = scanner.nextLine().trim().toUpperCase();
-
-            if (input.isEmpty()) return null;
-
-            if (input.equals("M") || input.equals("F")) {
-                return input;
-            }
-            printErr("Invalid! Use 'M', 'F', or press Enter.");
+    public static String readOptionalGender(String prompt, String oldValue) {
+        System.out.print(prompt + " [" + (oldValue != null ? oldValue : "M/F") + "]: ");
+        String input = scanner.nextLine().trim().toUpperCase();
+        if (input.isEmpty()) return oldValue;
+        if (input.equals("M") || input.equals("F") || input.equals("OTHER")) {
+            return input;
         }
+        printWarn("Invalid input. Keeping old value.");
+        return oldValue;
     }
 }

@@ -8,7 +8,8 @@ public interface ScholarshipDao {
     void save(Scholarship scholarship);
     Scholarship findById(int id);
     List<Scholarship> findAll();
-    void update(Scholarship scholarship);
+    boolean updateScholarship(Scholarship s);
+
     void deleteById(int id);
 
     List<Scholarship> fetchByPage(int limit, int offset);
