@@ -4,7 +4,6 @@ import config.DBConfig;
 import dao.ScholarshipDao;
 import model.Scholarship;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,33 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
         } catch (SQLException e) {
             printErr("Error saving scholarship: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Scholarship> searchScholarships(String keyword, int limit, int offset) {
+        List<Scholarship> list = new ArrayList<>();
+        String sql = "SELECT * FROM scholarships WHERE (type ILIKE ? OR description ILIKE ? OR sponsor ILIKE ?) LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Wrap keyword in % for partial matching
+            String query = "%" + keyword + "%";
+            pstmt.setString(1, query);
+            pstmt.setString(2, query);
+            pstmt.setString(3, query);
+            pstmt.setInt(4, limit);
+            pstmt.setInt(5, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToScholarship(rs));
+                }
+            }
+        } catch (SQLException e) {
+            printErr("DAO Search Error: " + e.getMessage());
+        }
+        return list;
     }
 
     @Override
@@ -121,7 +147,7 @@ public class ScholarshipDaoImpl implements ScholarshipDao {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            printErr("❌ Database Error: " + e.getMessage());
+            printErr("Database Error: " + e.getMessage());
             return false;
         }
     }

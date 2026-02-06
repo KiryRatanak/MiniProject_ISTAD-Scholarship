@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface ScholarshipDao {
     void save(Scholarship scholarship);
+
+    List<Scholarship> searchScholarships(String keyword, int limit, int offset);
+
     Scholarship findById(int id);
     List<Scholarship> findAll();
     boolean updateScholarship(Scholarship s);

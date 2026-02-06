@@ -112,7 +112,7 @@ public class Tables {
     }
 
     public static void renderAllScholarship(List<Scholarship> scholarships) {
-        Table t = new Table(10, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+        Table t = new Table(11, BorderStyle.UNICODE_ROUND_BOX_WIDE);
 
         t.addCell(BLUE+"Id");
         t.addCell(BLUE+"Type"+RESET);
@@ -122,6 +122,7 @@ public class Tables {
         t.addCell(BLUE+"Sponsor"+RESET);
         t.addCell(BLUE+"Duration"+RESET);
         t.addCell(BLUE+"Quota"+RESET);
+        t.addCell(BLUE+"Week"+RESET);
         t.addCell(BLUE+"Year"+RESET);
         t.addCell(BLUE+"Status"+RESET);
 
@@ -134,6 +135,7 @@ public class Tables {
             t.addCell(CYAN + s.getSponsor() + RESET);
             t.addCell(YELLOW + s.getDuration() + RESET);
             t.addCell(YELLOW + s.getMaxQuota() +RESET);
+            t.addCell(CYAN + s.getWeek() + RESET);
             t.addCell(PURPLE + s.getYearLevel() + RESET);
             t.addCell(s.getIsEnabled() ? GREEN+"Active"+RESET : RED+"Disabled"+RESET);
         }

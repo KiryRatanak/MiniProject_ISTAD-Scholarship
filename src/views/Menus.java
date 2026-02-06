@@ -46,7 +46,7 @@ public class Menus {
 
             switch (choice) {
                 case 1 -> viewAllScholarship();
-                case 2 -> searchScholarshipById();
+                case 2 -> searchScholarships();
                 case 3 -> applyScholarship();
                 case 4 -> viewOwnEnrollment();
                 case 5 -> updateOwnEnrollment();
@@ -162,6 +162,49 @@ public class Menus {
         }
     }
 
+    public static void searchScholarships() {
+        String keyword = readString(PURPLE + "> Enter search keyword (Type/Subject/Sponsor): " + RESET);
+
+        int pageSize = 5;
+        int currentPage = 0;
+
+        while (true) {
+            int offset = currentPage * pageSize;
+
+            try {
+                List<Scholarship> list = scholarshipService.searchScholarships(keyword, pageSize, offset);
+
+                if (list.isEmpty() && currentPage == 0) {
+                    printWarn("No scholarship results found for: " + keyword);
+                    return;
+                }
+
+                renderAllScholarship(list);
+
+                Tables.renderPage("Search: '" + keyword + "' | Page: " + (currentPage + 1),
+                        "["+ GREEN +"N"+ RESET +"] Next | ["+ BLUE +"P"+ RESET +"] Previous | ["+ RED +"E"+ RESET +"] Exit Search");
+
+                String choice = readString(PURPLE + "> Choose option: " + RESET).toUpperCase().trim();
+
+                switch (choice) {
+                    case "N" -> {
+                        if (list.size() == pageSize) currentPage++;
+                        else printWarn("No more results available.");
+                    }
+                    case "P" -> {
+                        if (currentPage > 0) currentPage--;
+                        else printWarn("You are on the first page.");
+                    }
+                    case "E" -> { return; }
+                    default -> printErr("Invalid choice. Please use N, P, or E.");
+                }
+            } catch (Exception e) {
+                printErr("Search Error: " + e.getMessage());
+                break;
+            }
+        }
+    }
+
     public static void viewAllScholarship() {
         int pageSize = 5;
         int currentPage = 0;
@@ -214,7 +257,7 @@ public class Menus {
         Scholarship existing = scholarshipService.getScholarshipById(id);
 
         if (existing == null) {
-            printErr("❌ Scholarship not found.");
+            printErr("Scholarship not found.");
             return;
         }
 
@@ -359,7 +402,7 @@ public class Menus {
         Enrollment existing = enrollmentService.getEnrollmentById(id);
 
         if (existing == null) {
-            printErr("❌ Enrollment ID not found.");
+            printErr("Enrollment ID not found.");
             return;
         }
 

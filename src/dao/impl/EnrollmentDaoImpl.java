@@ -69,7 +69,7 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("❌ Database error: " + e.getMessage());
+            throw new RuntimeException("Database error: " + e.getMessage());
         }
         return list; // Return the list we built, don't call the method again!
     }
@@ -230,7 +230,7 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("❌ Search error: " + e.getMessage());
+            throw new RuntimeException("Search error: " + e.getMessage());
         }
         return list;
     }
@@ -267,7 +267,7 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException err) {
-            printErr("❌ SQL Update Error: " + err.getMessage());
+            printErr("SQL Update Error: " + err.getMessage());
             return false;
         }
     }
@@ -301,7 +301,7 @@ public class EnrollmentDaoImpl implements EnrollmentDao {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            printErr("❌ Database error: " + e.getMessage());
+            printErr("Database error: " + e.getMessage());
             return false;
         }
     }

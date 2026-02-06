@@ -28,6 +28,11 @@ public class ScholarshipServiceImpl implements ScholarshipService {
     }
 
     @Override
+    public List<Scholarship> searchScholarships(String keyword, int limit, int offset) {
+        return scholarshipDao.searchScholarships(keyword, limit, offset);
+    }
+
+    @Override
     public Scholarship getScholarshipById(int id) {
         Scholarship scholarship = scholarshipDao.findById(id);
         if (scholarship == null) {

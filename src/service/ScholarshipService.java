@@ -9,8 +9,13 @@ public interface ScholarshipService {
 
     List<Scholarship> getScholarshipsByPage(int limit, int offset);
 
+    List<Scholarship> searchScholarships(String keyword, int limit, int offset);
+
     Scholarship getScholarshipById(int id);
+
     List<Scholarship> getAllScholarships();
+
     boolean updateScholarship(Scholarship scholarship);
+
     void deleteScholarship(int id);
 }
