@@ -4,6 +4,8 @@ import model.Enrollment;
 import java.util.List;
 
 public interface EnrollmentDao {
+    List<Enrollment> fetchByPage(int limit, int offset);
+
     void insert(Enrollment enrollment);
 
     List<Enrollment> selectByUserId(int userId);

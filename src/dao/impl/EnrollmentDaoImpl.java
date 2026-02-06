@@ -7,7 +7,49 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static utils.PrintUtils.*;
+
 public class EnrollmentDaoImpl implements EnrollmentDao {
+
+    @Override
+    public List<Enrollment> fetchByPage(int limit, int offset) {
+        List<Enrollment> enrollments = new ArrayList<>();
+        String sql = "SELECT * FROM enrollments WHERE is_deleted = false ORDER BY id LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, limit);
+            pstmt.setInt(2, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    enrollments.add(mapResultSetToEnrollment(rs));
+                }
+            }
+        } catch (SQLException e) {
+            printErr("Error fetching paginated enrollments: " + e.getMessage());
+        }
+        return enrollments;
+    }
+
+    private Enrollment mapResultSetToEnrollment(ResultSet rs) throws SQLException {
+        return Enrollment.builder()
+                .id(rs.getInt("id"))
+                .scholarshipId(rs.getInt("scholarship_id"))
+                .userId(rs.getInt("user_id"))
+                .fullName(rs.getString("full_name"))
+                .gender(rs.getString("gender"))
+                .dob(rs.getDate("dob").toLocalDate())
+                .phoneNumber(rs.getString("phone_number"))
+                .yearLevel(rs.getInt("year_level"))
+                .school(rs.getString("school"))
+                .major(rs.getString("major"))
+                .paymentStatus(rs.getString("payment_status"))
+                .paymentMethod(rs.getString("payment_method"))
+                .isDeleted(rs.getBoolean("is_deleted"))
+                .build();
+    }
 
     @Override
     public void insert(Enrollment e) {

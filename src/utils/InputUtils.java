@@ -79,6 +79,10 @@ public class InputUtils {
         }
     }
 
+    public static boolean isInteger(String str) {
+        return str != null && str.matches("\\d+");
+    }
+
     public static BigDecimal readBigDecimal(String label) {
         while (true) {
             System.out.print(label);

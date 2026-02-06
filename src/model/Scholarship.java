@@ -22,5 +22,5 @@ public class Scholarship {
     private Integer maxQuota;
     private Integer yearLevel;
     private String week;
-    private Boolean isEnabled;
+    private Boolean isEnabled =true ;
 }

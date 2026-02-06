@@ -19,59 +19,66 @@ public class Tables {
     }
 
     public static void renderStartMenu(){
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(CYAN + "   WELCOME TO ISTAD SCHOLARSHIP SYSTEM   " + RESET);
+        t.addCell(BLUE + "   1. Login   " + RESET);
+        t.addCell(BLUE + "   2. Sign Up   " + RESET);
+        t.addCell(RED + "   0. Exit   " + RESET);
+        System.out.println(t.render());
+    }
+
+    public static void renderPage(String message1, String message2){
         Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "WELCOME TO ISTAD SCHOLARSHIP SYSTEM" + RESET);
-        t.addCell(BLUE + "1. Login" + RESET);
-        t.addCell(BLUE + "2. Sign Up" + RESET);
-        t.addCell(RED + "0. Exit" + RESET);
+        t.addCell(CYAN+message1+RESET);
+        t.addCell(message2);
         System.out.println(t.render());
     }
 
     public static void renderAdminMenu(){
-        Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "Admin Dashboard" + RESET);
-        t.addCell(BLUE + "1. Scholarship" + RESET);
-        t.addCell(BLUE + "2. Enrollment" + RESET);
-        t.addCell(RED + "0. LogOut" + RESET);
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(CYAN + "   ***   Admin Dashboard   ***   " + RESET);
+        t.addCell(BLUE + "   1. Scholarship   " + RESET);
+        t.addCell(BLUE + "   2. Enrollment   " + RESET);
+        t.addCell(RED + "   0. LogOut   " + RESET);
         System.out.println(t.render());
     }
 
     public static void renderUserMenu(){
 
-        Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "Student Dashboard" + RESET);
-        t.addCell(BLUE + "1. View Scholarship" + RESET);
-        t.addCell(BLUE + "2. Search Scholarship" + RESET);
-        t.addCell(BLUE + "3. Apply Scholarship" + RESET);
-        t.addCell(BLUE + "4. View Own Enrollment" + RESET);
-        t.addCell(BLUE + "5. Update Own Enrollment" + RESET);
-        t.addCell(BLUE + "6. Delete Own Enrollment" + RESET);
-        t.addCell(RED + "0. LogOut" + RESET);
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(CYAN + "   ***   Student Dashboard   ***   " + RESET);
+        t.addCell(BLUE + "   1. View Scholarship   " + RESET);
+        t.addCell(BLUE + "   2. Search Scholarship   " + RESET);
+        t.addCell(BLUE + "   3. Apply Scholarship   " + RESET);
+        t.addCell(BLUE + "   4. View Own Enrollment   " + RESET);
+        t.addCell(BLUE + "   5. Update Own Enrollment   " + RESET);
+        t.addCell(BLUE + "   6. Delete Own Enrollment   " + RESET);
+        t.addCell(RED + "   0. LogOut" + RESET);
         System.out.println(t.render());
 
     }
 
     public static void renderScholarshipMenu(){
-        Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "*** Scholarship Management ***" + RESET);
-        t.addCell(BLUE + "1. Create Scholarship" + RESET);
-        t.addCell(BLUE + "2. View All Scholarship" + RESET);
-        t.addCell(BLUE + "3. Search Scholarship" + RESET);
-        t.addCell(BLUE + "4. Update Scholarship" + RESET);
-        t.addCell(BLUE + "5. Delete Scholarship" + RESET);
-        t.addCell(RED + "0. Back" + RESET);
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(CYAN + "   *** Scholarship Management ***   " + RESET);
+        t.addCell(BLUE + "   1. Create Scholarship   " + RESET);
+        t.addCell(BLUE + "   2. View All Scholarship   " + RESET);
+        t.addCell(BLUE + "   3. Search Scholarship   " + RESET);
+        t.addCell(BLUE + "   4. Update Scholarship   " + RESET);
+        t.addCell(BLUE + "   5. Delete Scholarship   " + RESET);
+        t.addCell(RED + "   0. Back" + RESET);
         System.out.println(t.render());
     }
 
     public static void renderEnrollmentMenu(){
-        Table t = new Table(1, BorderStyle.UNICODE_ROUND_BOX_WIDE);
-        t.addCell(GREEN + "*** Enrollment Management ***" + RESET);
-        t.addCell(BLUE + "1. Create Enrollment" + RESET);
-        t.addCell(BLUE + "2. View All Enrollment" + RESET);
-        t.addCell(BLUE + "3. Search Enrollment" + RESET);
-        t.addCell(BLUE + "4. Update Enrollment" + RESET);
-        t.addCell(BLUE + "5. Delete Enrollment" + RESET);
-        t.addCell(RED + "0. Back" + RESET);
+        Table t = new Table(1, BorderStyle.UNICODE_BOX_HEAVY_BORDER);
+        t.addCell(CYAN + "   *** Enrollment Management ***   " + RESET);
+        t.addCell(BLUE + "   1. Create Enrollment   " + RESET);
+        t.addCell(BLUE + "   2. View All Enrollment   " + RESET);
+        t.addCell(BLUE + "   3. Search Enrollment   " + RESET);
+        t.addCell(BLUE + "   4. Update Enrollment   " + RESET);
+        t.addCell(BLUE + "   5. Delete Enrollment   " + RESET);
+        t.addCell(RED + "   0. Back   " + RESET);
         System.out.println(t.render());
     }
 
@@ -107,28 +114,28 @@ public class Tables {
     public static void renderAllScholarship(List<Scholarship> scholarships) {
         Table t = new Table(10, BorderStyle.UNICODE_ROUND_BOX_WIDE);
 
-        t.addCell("Id");
-        t.addCell("Type");
-        t.addCell("Description");
-        t.addCell("Scholarship");
-        t.addCell("Full Price");
-        t.addCell("Sponsor");
-        t.addCell("Duration");
-        t.addCell("Quota");
-        t.addCell("Year");
-        t.addCell("Status");
+        t.addCell(BLUE+"Id");
+        t.addCell(BLUE+"Type"+RESET);
+        t.addCell(BLUE+"Description"+RESET);
+        t.addCell(BLUE+"Scholarship"+RESET);
+        t.addCell(BLUE+"Full Price"+RESET);
+        t.addCell(BLUE+"Sponsor"+RESET);
+        t.addCell(BLUE+"Duration"+RESET);
+        t.addCell(BLUE+"Quota"+RESET);
+        t.addCell(BLUE+"Year"+RESET);
+        t.addCell(BLUE+"Status"+RESET);
 
         for (Scholarship s : scholarships) {
-            t.addCell(String.valueOf(s.getId()));
-            t.addCell(s.getType());
+            t.addCell(PURPLE + s.getId() + RESET);
+            t.addCell(GREEN + s.getType()+RESET);
             t.addCell(s.getDescription());
-            t.addCell(String.valueOf(s.getScholarship()));
-            t.addCell(s.getFullPrice().toString());
-            t.addCell(s.getSponsor());
-            t.addCell(s.getDuration());
-            t.addCell(String.valueOf(s.getMaxQuota()));
-            t.addCell(String.valueOf(s.getYearLevel()));
-            t.addCell(s.getIsEnabled() ? "Active" : "Disabled");
+            t.addCell(GREEN + s.getScholarship() + RESET);
+            t.addCell(RED + s.getFullPrice().toString() + RESET);
+            t.addCell(CYAN + s.getSponsor() + RESET);
+            t.addCell(YELLOW + s.getDuration() + RESET);
+            t.addCell(YELLOW + s.getMaxQuota() +RESET);
+            t.addCell(PURPLE + s.getYearLevel() + RESET);
+            t.addCell(s.getIsEnabled() ? GREEN+"Active"+RESET : RED+"Disabled"+RESET);
         }
 
         System.out.println(t.render());

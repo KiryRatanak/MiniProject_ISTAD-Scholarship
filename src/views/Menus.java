@@ -6,6 +6,8 @@ import service.EnrollmentService;
 import service.ScholarshipService;
 import service.impl.EnrollmentServiceImpl;
 import service.impl.ScholarshipServiceImpl;
+import utils.InputUtils;
+import utils.PrintUtils;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -105,11 +107,11 @@ public class Menus {
             int choice = readIntInRange(PURPLE+"> Choose : "+RESET,0,5);
 
             switch (choice) {
-                case 1 -> createEnrollment();
-                case 2 -> viewAllEnrollment();
-                case 3 -> searchEnrollmentById();
-                case 4 -> updateEnrollment();
-                case 5 -> deleteEnrollment();
+                case 1 -> applyScholarship();
+//                case 2 -> viewAllEnrollment();
+//                case 3 -> searchEnrollmentById();
+//                case 4 -> updateStudentInfoByAdmin();
+//                case 5 -> deleteEnrollment();
                 case 0 -> {
                     return;
                 }
@@ -162,12 +164,49 @@ public class Menus {
     }
 
     public static void viewAllScholarship() {
-        try {
-            List<Scholarship> list = scholarshipService.getAllScholarships();
-            renderAllScholarship(list);
-        }
-        catch (RuntimeException e){
-            printErr(e.getMessage());
+        int pageSize = 5;
+        int currentPage = 0;
+
+        label:
+        while (true) {
+            int offset = currentPage * pageSize;
+            try {
+                List<Scholarship> list = scholarshipService.getScholarshipsByPage(pageSize, offset);
+
+                if (list.isEmpty() && currentPage == 0) {
+                    PrintUtils.printWarn("No scholarships found in the system.");
+                    return;
+                }
+
+                Tables.renderAllScholarship(list);
+                Tables.renderPage("Page: " + (currentPage + 1), "["+ GREEN+"N"+ RESET+"] Next | ["+ BLUE+"P"+ RESET+"] Previous | ["+ RED+"E"+ RESET+"] Exit");
+                String choice = readString(PURPLE+"> Choose option : "+ RESET).toUpperCase().trim();
+
+                switch (choice) {
+
+                    case "N" -> {
+                        if (list.size() == pageSize) currentPage++;
+                        else printWarn("No more data.");
+                    }
+
+                    case "P" -> {
+                        if (currentPage > 0) currentPage--;
+                        else printWarn("Already on page 1.");
+                    }
+
+                    case "E" -> {
+                        return;
+                    }
+
+                    default -> {
+                        printErr("Invalid input: '" + choice + "'. Use N, P, E or an ID number.");
+                    }
+                }
+
+            } catch (RuntimeException e) {
+                printErr("Error: " + e.getMessage());
+                break;
+            }
         }
     }
 
@@ -245,6 +284,82 @@ public class Menus {
         }
 
     }
+
+//    public static void viewAllEnrollment() {
+//        List<Enrollment> allData = enrollmentService.getAllEnrollments();
+//        if (allData.isEmpty()) {
+//            printWarn("No enrollment records found.");
+//            return;
+//        }
+//        renderViewOwnEnrollment(allData);
+//    }
+//
+//    public static void searchEnrollmentById() {
+//        int id = readInt("Search Enrollment ID: ");
+//        Enrollment e = enrollmentService.getEnrollmentById(id);
+//        if (e != null) {
+//            renderAllEnrollment(e);
+//        } else {
+//            printErr("❌ ID not found.");
+//        }
+//    }
+//
+//    public static void deleteEnrollment() {
+//        int id = readInt("Enter ID to Delete: ");
+//        Enrollment e = enrollmentService.getEnrollmentById(id);
+//
+//        if (e != null) {
+//            renderDetailedEnrollment(e);
+//            System.out.print(RED + "PERMANENTLY DELETE this record? (Y/N): " + RESET);
+//            if (scanner.nextLine().trim().equalsIgnoreCase("Y")) {
+//                enrollmentService.deleteEnrollment(id);
+//                printTrue("✅ Record deleted.");
+//            }
+//        }
+//    }
+//
+//    public static void updateStudentInfoByAdmin() {
+//        int id = readInt("Enter Enrollment ID to update student info: ");
+//        Enrollment existing = enrollmentService.getEnrollmentById(id);
+//
+//        if (existing == null) {
+//            printErr("❌ Enrollment not found.");
+//            return;
+//        }
+//
+//        // Show the full record so Admin knows who they are editing
+//        renderDetailedEnrollment(existing);
+//        printWarn("Press (Enter) to keep current value...");
+//
+//        // Update Full Name
+//        String name = readOptionalString("New Full Name: ", existing.getFullName());
+//        if (name != null) existing.setFullName(name);
+//
+//        // Update Gender
+//        String gender = readOptionalGender("New Gender", existing.getGender());
+//        if (gender != null) existing.setGender(gender);
+//
+//        // Update Phone (Supports +855 format)
+//        String phone = readOptionalPhoneNumber("New Phone Number", existing.getPhoneNumber());
+//        if (phone != null) existing.setPhoneNumber(phone);
+//
+//        // Update Year Level (0-5)
+//        Integer year = readOptionalInt("New Year Level: ");
+//        if (year != null) existing.setYearLevel(year);
+//
+//        // Update Major
+//        String major = readOptionalString("New Major: ", existing.getMajor());
+//        if (major != null) existing.setMajor(major);
+//
+//        // Update School
+//        String school = readOptionalString("New School Name: ", existing.getSchool());
+//        if (school != null) existing.setSchool(school);
+//
+//        // Final Save
+//        if (enrollmentService.updateMyEnrollment(existing)) {
+//            printTrue("✅ Student information updated successfully by Admin!");
+//        }
+//    }
 
     /* end admin */
 

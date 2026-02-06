@@ -1,6 +1,8 @@
 package service.impl;
 
+import dao.EnrollmentDao;
 import dao.ScholarshipDao;
+import dao.impl.EnrollmentDaoImpl;
 import dao.impl.ScholarshipDaoImpl;
 import model.Scholarship;
 import service.ScholarshipService;
@@ -20,6 +22,11 @@ public class ScholarshipServiceImpl implements ScholarshipService {
         } else {
             printErr("Cannot create a null scholarship.");
         }
+    }
+
+    @Override
+    public List<Scholarship> getScholarshipsByPage(int limit, int offset) {
+        return scholarshipDao.fetchByPage(limit, offset);
     }
 
     @Override

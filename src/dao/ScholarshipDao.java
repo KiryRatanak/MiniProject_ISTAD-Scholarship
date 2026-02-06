@@ -10,4 +10,6 @@ public interface ScholarshipDao {
     List<Scholarship> findAll();
     void update(Scholarship scholarship);
     void deleteById(int id);
+
+    List<Scholarship> fetchByPage(int limit, int offset);
 }
