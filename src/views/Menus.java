@@ -108,7 +108,7 @@ public class Menus {
                 case 2 -> viewAllEnrollments();
                 case 3 -> searchEnrollments();
                 case 4 -> updateEnrollmentByAdmin();
-//                case 5 -> deleteEnrollment();
+                case 5 -> deleteEnrollmentByAdmin();
                 case 0 -> {
                     return;
                 }
@@ -116,6 +116,8 @@ public class Menus {
             }
         }
     }
+
+    // scholarship
 
     public static void createScholarship() {
         printHead("Create New Scholarship");
@@ -151,7 +153,7 @@ public class Menus {
             Scholarship s = scholarshipService.getScholarshipById(id);
 
             if (s != null) {
-                System.out.println("✅ Found Result :");
+                printTrue("Found Result");
                 renderSearchScholarship(s);
             }
         }
@@ -206,6 +208,71 @@ public class Menus {
             }
         }
     }
+
+    public static void updateScholarship() {
+        int id = readInt(PURPLE + "> Enter Scholarship ID to update: " + RESET);
+        Scholarship existing = scholarshipService.getScholarshipById(id);
+
+        if (existing == null) {
+            printErr("❌ Scholarship not found.");
+            return;
+        }
+
+        renderAllScholarship(List.of(existing));
+        printWarn("Press (Enter) to keep current data...");
+
+        try {
+            existing.setType(readOptionalString("New Type", existing.getType()));
+
+            existing.setDescription(readOptionalString("New Description", existing.getDescription()));
+
+            existing.setScholarship(readOptionalInt("New Scholarship (%)", existing.getScholarship()));
+
+            existing.setFullPrice(readOptionalBigDecimal("New Full Price", existing.getFullPrice()));
+
+            existing.setSponsor(readOptionalString("New Sponsor", existing.getSponsor()));
+
+            existing.setDuration(readOptionalString("New Duration", existing.getDuration()));
+
+            existing.setMaxQuota(readOptionalInt("New Max Quota", existing.getMaxQuota()));
+
+            existing.setYearLevel(readOptionalInt("New Year Level", existing.getYearLevel()));
+
+            existing.setWeek(readOptionalString("New Week Info", existing.getWeek()));
+
+            String confirm = readString(YELLOW + "Apply these changes? (Y/N): " + RESET).toUpperCase().trim();
+
+            if (confirm.equals("Y")) {
+                printTrue("Enrollment updated successfully!");
+            } else {
+                printWarn("Update cancelled.");
+            }
+
+        } catch (Exception e) {
+            printErr("Input Error: " + (e.getMessage() != null ? e.getMessage() : "Invalid data type"));
+        }
+    }
+
+    public static void deleteScholarship() {
+        int id = readInt("Enter ID to delete : ");
+
+        try{
+
+            Scholarship s = scholarshipService.getScholarshipById(id);
+            if (s != null) {
+                String confirm = readString("Are you sure to deleteScholarship ID " + id + "? (Y/n) : ");
+                if (confirm.equalsIgnoreCase("y")) {
+                    scholarshipService.deleteScholarship(id);
+                    printTrue("Deleted.");
+                }
+            }}
+        catch (RuntimeException e){
+            printErr(e.getMessage());
+        }
+
+    }
+
+    // enrollment
 
     public static void searchEnrollments() {
         String keyword = readString(PURPLE + "> Enter search keyword (Name/Major/School): " + RESET);
@@ -287,72 +354,6 @@ public class Menus {
         }
     }
 
-    public static void updateScholarship() {
-        int id = readInt(PURPLE + "> Enter Scholarship ID to update: " + RESET);
-        Scholarship existing = scholarshipService.getScholarshipById(id);
-
-        if (existing == null) {
-            printErr("❌ Scholarship not found.");
-            return;
-        }
-
-        renderAllScholarship(List.of(existing));
-        printWarn("Press (Enter) to keep current data...");
-
-        try {
-            existing.setType(readOptionalString("New Type: ", existing.getType()));
-
-            existing.setDescription(readOptionalString("New Description: ", existing.getDescription()));
-
-            existing.setScholarship(readOptionalInt("New Scholarship (%): ", existing.getScholarship()));
-
-            existing.setFullPrice(readOptionalBigDecimal("New Full Price: ", existing.getFullPrice()));
-
-            existing.setSponsor(readOptionalString("New Sponsor: ", existing.getSponsor()));
-
-            existing.setDuration(readOptionalString("New Duration: ", existing.getDuration()));
-
-            existing.setMaxQuota(readOptionalInt("New Max Quota: ", existing.getMaxQuota()));
-
-            existing.setYearLevel(readOptionalInt("New Year Level: ", existing.getYearLevel()));
-
-            existing.setWeek(readOptionalString("New Week Info: ", existing.getWeek()));
-
-            existing.setIsEnabled(true);
-
-            String confirm = readString(YELLOW + "Apply changes? (Y/N): " + RESET).toUpperCase().trim();
-            if (confirm.equals("Y")) {
-                if (scholarshipService.updateScholarship(existing)) {
-                    printTrue("✅ Scholarship ID " + id + " updated successfully!");
-                }
-            } else {
-                printWarn("Update cancelled.");
-            }
-
-        } catch (Exception e) {
-            printErr("Input Error: " + (e.getMessage() != null ? e.getMessage() : "Invalid data type"));
-        }
-    }
-
-    public static void deleteScholarship() {
-        int id = readInt("Enter ID to delete : ");
-
-        try{
-
-        Scholarship s = scholarshipService.getScholarshipById(id);
-        if (s != null) {
-            String confirm = readString("Are you sure to deleteScholarship ID " + id + "? (Y/n) : ");
-            if (confirm.equalsIgnoreCase("y")) {
-                scholarshipService.deleteScholarship(id);
-                printTrue("Deleted.");
-            }
-        }}
-        catch (RuntimeException e){
-            printErr(e.getMessage());
-        }
-
-    }
-
     public static void updateEnrollmentByAdmin() {
         int id = readInt(PURPLE + "> Enter Enrollment ID to update: " + RESET);
         Enrollment existing = enrollmentService.getEnrollmentById(id);
@@ -382,7 +383,7 @@ public class Menus {
 
             if (confirm.equals("Y")) {
                 if (enrollmentService.updateEnrollment(existing)) {
-                    printTrue("✅ Enrollment updated successfully!");
+                    printTrue("Enrollment updated successfully!");
                 }
             } else {
                 printWarn("Update cancelled.");
@@ -398,7 +399,7 @@ public class Menus {
         Enrollment existing = enrollmentService.getEnrollmentById(id);
 
         if (existing == null) {
-            printErr("❌ Enrollment ID not found.");
+            printErr("Enrollment ID not found.");
             return;
         }
 
@@ -408,9 +409,9 @@ public class Menus {
 
         if (confirm.equals("Y")) {
             if (enrollmentService.deleteEnrollment(id)) {
-                printTrue("✅ Enrollment ID " + id + " has been deleted.");
+                printTrue("Enrollment ID " + id + " has been deleted.");
             } else {
-                printErr("❌ Failed to delete the record.");
+                printErr("Failed to delete the record.");
             }
         } else {
             printWarn("Deletion cancelled.");
@@ -493,7 +494,7 @@ public class Menus {
 
             // Security check: Ensure the enrollment exists and belongs to the logged-in user
             if (existing == null || !existing.getUserId().equals(currentUser.getId())) {
-                printWarn("❌ Enrollment not found or access denied.");
+                printWarn("Enrollment not found or access denied.");
                 return;
             }
 
@@ -517,14 +518,13 @@ public class Menus {
 
             existing.setPaymentMethod(readOptionalString("Enter new Payment Method", existing.getPaymentMethod()));
 
-            // Confirmation before saving
             String confirm = readString(YELLOW + "Apply changes? (Y/N): " + RESET).toUpperCase().trim();
 
             if (confirm.equals("Y")) {
                 if (enrollmentService.updateEnrollment(existing)) {
-                    printTrue("✅ Your enrollment has been updated successfully!");
+                    printTrue("Your enrollment has been updated successfully!");
                 } else {
-                    printErr("❌ Update failed at the database level.");
+                    printErr("Update failed at the database level.");
                 }
             } else {
                 printWarn("Update cancelled.");
